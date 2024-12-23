@@ -30,7 +30,7 @@ const navMenu: NavMenuItems = [
 	{
 		items: [
 			{
-				name: 'Overview',
+				name: 'Events',
 				href: `/`,
 				icon: <LayoutDashboardIcon width={18} />,
 			},

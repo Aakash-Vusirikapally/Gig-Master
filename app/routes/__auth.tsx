@@ -1,53 +1,34 @@
-import {Avatar} from '@mantine/core'
-import type {LoaderFunction} from '@remix-run/node'
-import {redirect} from '@remix-run/node'
-import {Outlet} from '@remix-run/react'
-import {getUser} from '~/session.server'
+import type { LoaderFunction } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
+import { Outlet } from '@remix-run/react';
+import { getUser } from '~/session.server';
 
-export const loader: LoaderFunction = async ({request}) => {
-	const user = await getUser(request)
-	if (user) return redirect('/')
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await getUser(request);
+  if (user) return redirect('/');
 
-	return null
-}
+  return null;
+};
 
 export default function AuthLayout() {
-	return (
-		<>
-			<main className="h-screen bg-white">
-				<div className="container relative h-full flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-					<div className="relative hidden h-full flex-col p-10 text-gray-200 lg:flex">
-						<div className="absolute inset-0 flex items-center justify-center bg-zinc-800">
-							<img
-								src="https://images.unsplash.com/photo-1578575436955-ef29da568c6c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
-								alt="IPM Ticket Master"
-								className="block w-full object-contain"
-							/>
-						</div>
-						<div className="relative z-20 flex items-center gap-4 text-lg font-medium">
-							<Avatar
-								src={null}
-								alt="IPM Ticket Master"
-								size="md"
-								classNames={{
-									placeholder: '!text-xl !text-stone-700',
-									root: '!h-8 !flex !items-center !justify-center',
-								}}
-							>
-								TM
-							</Avatar>
+  return (
+    <main
+      className="h-screen bg-cover bg-center flex flex-col items-center justify-center"
+      style={{
+        backgroundImage:
+          'url(https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg?cs=srgb&dl=pexels-thibault-trillet-44912-167636.jpg&fm=jpg)',
+      }}
+    >
+      {/* Title and Subline */}
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-bold text-white">GigMaster</h1>
+        <p className="text-lg text-gray-300">Your gateway to the best events.</p>
+      </div>
 
-							<span className="font-cal text-xl text-gray-200">
-								IPL Ticket Master
-							</span>
-						</div>
-					</div>
-
-					<div className="p-8">
-						<Outlet />
-					</div>
-				</div>
-			</main>
-		</>
-	)
+      {/* Dashboard */}
+      <div className="w-full max-w-md bg-white/90 p-8 rounded-lg shadow-lg">
+        <Outlet />
+      </div>
+    </main>
+  );
 }

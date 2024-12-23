@@ -65,8 +65,7 @@ export default function OrderHistory() {
 													<TableTd>
 														<div>
 															<p className="truncate text-sm font-medium text-blue-600">
-																{payment.order.schedule.teamOne.name} vs{' '}
-																{payment.order.schedule.teamTwo.name}
+																{payment.order.schedule.teamOne.name}
 															</p>
 															<p className="flex items-center text-sm text-gray-500">
 																{payment.order.schedule.stadium.name}

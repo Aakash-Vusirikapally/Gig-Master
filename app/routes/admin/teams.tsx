@@ -89,7 +89,7 @@ export default function ManageTeams() {
 			<div className="flex max-w-screen-xl flex-col gap-12 p-10">
 				<div className="flex flex-col gap-8">
 					<PageHeading
-						title="Teams"
+						title="Bands"
 						rightSection={
 							<Button
 								color="dark"
@@ -154,7 +154,7 @@ export default function ManageTeams() {
 						</div>
 					) : (
 						<EmptyState
-							label="No teams have been added yet"
+							label="No bands have been added yet"
 							icon={<ListXIcon size={70} className="text-gray-600" />}
 						/>
 					)}
@@ -168,8 +168,8 @@ export default function ManageTeams() {
 					handleModal.close()
 				}}
 				title={clsx({
-					'Edit team': mode === MODE.edit,
-					'Add team': mode === MODE.add,
+					'Edit band': mode === MODE.edit,
+					'Add band': mode === MODE.add,
 				})}
 				centered
 				overlayBlur={1.2}
@@ -212,7 +212,7 @@ export default function ManageTeams() {
 								loading={isSubmitting}
 								loaderPosition="right"
 							>
-								{mode === MODE.edit ? 'Save changes' : 'Add teams'}
+								{mode === MODE.edit ? 'Save changes' : 'Add Bands'}
 							</Button>
 						</div>
 					</fieldset>

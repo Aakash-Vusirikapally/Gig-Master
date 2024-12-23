@@ -52,12 +52,12 @@ const navMenu: NavMenuItems = [
 				icon: <UserCog2Icon width={18} />,
 			},
 			{
-				name: 'Teams',
+				name: 'Band',
 				href: `${ROUTE}/teams`,
 				icon: <UserCogIcon width={18} />,
 			},
 			{
-				name: 'Stadiums',
+				name: 'Venue',
 				href: `${ROUTE}/stadiums`,
 				icon: <BuildingIcon width={18} />,
 			},

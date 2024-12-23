@@ -216,8 +216,7 @@ export default function BuyTickets() {
 								fixtureEndTime: f.timeSlot?.end,
 								stadium: f.stadium?.name,
 								teamOne: f.teamOne?.name,
-								teamTwo: f.teamTwo?.name,
-								label: `${f.teamOne?.name} vs ${f.teamTwo?.name}`,
+								label: `${f.teamOne?.name}`,
 								value: f.id,
 							}))}
 							error={fetcher.data?.fieldErrors?.fixtureId}
@@ -310,6 +309,18 @@ export default function BuyTickets() {
 							/>
 						</div>
 
+						<Input.Wrapper id="expiryDate" label="Expiry (MM/YYYY)" required>
+							<Input
+								id="expiryDate"
+								name="expiryDate"
+								type="month" // Native input type for month/year
+								placeholder="MM/YYYY"
+								required
+							/>
+						</Input.Wrapper>
+
+
+
 						<div className="mt-1 flex items-center justify-end gap-4">
 							<Button
 								variant="subtle"
@@ -362,7 +373,7 @@ function TicketRow({
 				<TableTd>
 					<div className="flex flex-col">
 						<div className="font-medium text-gray-900">
-							{order.schedule.teamOne.name} vs {order.schedule.teamTwo.name}
+							{order.schedule.teamOne.name}
 						</div>
 						<div className="font-medium text-gray-500">
 							{order.schedule.stadium.name}
@@ -492,7 +503,6 @@ interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
 	fixtureStartTime: string
 	fixtureEndTime: string
 	teamOne: string
-	teamTwo: string
 	stadium: string
 	label: string
 }
@@ -501,7 +511,6 @@ const SelectItem = React.forwardRef<HTMLDivElement, ItemProps>(
 	(props: ItemProps, ref) => {
 		const {
 			teamOne,
-			teamTwo,
 			fixtureDate,
 			fixtureStartTime,
 			fixtureEndTime,
@@ -513,7 +522,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, ItemProps>(
 				<Group noWrap>
 					<div>
 						<Text size="sm">
-							{teamOne} vs {teamTwo}
+							{teamOne}
 						</Text>
 						<Text size="xs" opacity={0.65}>
 							{stadium}

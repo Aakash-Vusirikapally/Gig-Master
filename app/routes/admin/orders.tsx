@@ -170,7 +170,7 @@ function OrderRow({
 			<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 				<div className="flex flex-col">
 					<div className="font-medium text-gray-900">
-						{order.schedule.teamOne.name} vs {order.schedule.teamTwo.name}
+						{order.schedule.teamOne.name}
 					</div>
 					<div className="font-medium text-gray-500">
 						{order.schedule.stadium.name}

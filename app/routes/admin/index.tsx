@@ -10,7 +10,7 @@ import {
 import {db} from '~/db.server'
 
 export const meta: MetaFunction = () => ({
-	title: 'Overview | IPL Ticket Master',
+	title: 'Overview | GM Ticket Master',
 })
 
 export const loader = async () => {

@@ -57,7 +57,6 @@ model Team {
   name             String     @unique
   abbr             String     @unique
   teamOneSchedules Schedule[] @relation("team_one")
-  teamTwoSchedules Schedule[] @relation("team_two")
 
   @@map("team")
 }
@@ -85,8 +84,6 @@ model Schedule {
   stadiumId String  @map("stadium_id") @db.ObjectId
   teamOne   Team    @relation("team_one", fields: [teamOneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   teamOneId String  @map("team_one_id") @db.ObjectId
-  teamTwo   Team    @relation("team_two", fields: [teamTwoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  teamTwoId String  @map("team_two_id") @db.ObjectId
 
   orders Order[]
 

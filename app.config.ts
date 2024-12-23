@@ -1,5 +1,5 @@
 const appConfig = {
-	name: 'Cricket Ticket Management System',
+	name: 'Gig Master',
 	logo: '/logo.png',
 	cardsLimit: 4,
 }

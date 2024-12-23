@@ -1,5 +1,5 @@
 import {CalendarDaysIcon, ClockIcon} from '@heroicons/react/24/outline'
-import {Badge, Button, Drawer, NativeSelect, Select, clsx} from '@mantine/core'
+import {Badge, Button, clsx, Drawer, NativeSelect, Select} from '@mantine/core'
 import {DatePicker, TimeInput} from '@mantine/dates'
 import {useDisclosure} from '@mantine/hooks'
 import type {Schedule, Stadium, Team} from '@prisma/client'
@@ -65,7 +65,6 @@ export default function ManageFixtures() {
 	const [mode, setMode] = React.useState<MODE>(MODE.edit)
 	const [stadiumId, setStadiumId] = React.useState<Stadium['id']>()
 	const [teamOneId, setTeamOneId] = React.useState<Team['id'] | null>(null)
-	const [teamTwoId, setTeamTwoId] = React.useState<Team['id'] | null>(null)
 	const [fixtureDate, setFixtureDate] = React.useState<Date | null>(null)
 	const [fixtureStartTime, setFixtureStartTime] = React.useState<Date | null>(
 		null
@@ -77,13 +76,6 @@ export default function ManageFixtures() {
 
 	const isSubmitting = fetcher.state !== 'idle'
 
-	React.useEffect(() => {
-		if (!teamOneId || !teamTwoId) return
-
-		if (teamOneId === teamTwoId) {
-			setTeamTwoId(null)
-		}
-	}, [teamOneId, teamTwoId])
 
 	React.useEffect(() => {
 		if (isSubmitting) {
@@ -102,7 +94,6 @@ export default function ManageFixtures() {
 		if (!selectedFixtureId) {
 			setSelectedFixture(null)
 			setTeamOneId(null)
-			setTeamTwoId(null)
 			setFixtureDate(null)
 			setFixtureStartTime(null)
 			setFixtureEndTime(null)
@@ -115,7 +106,6 @@ export default function ManageFixtures() {
 
 		setSelectedFixture(fixture)
 		setTeamOneId(fixture.teamOneId)
-		setTeamTwoId(fixture.teamTwoId)
 		setFixtureDate(new Date(fixture.timeSlot?.date ?? ''))
 		setFixtureStartTime(new Date(fixture.timeSlot?.start ?? ''))
 		setFixtureEndTime(new Date(fixture.timeSlot?.end ?? ''))
@@ -134,7 +124,7 @@ export default function ManageFixtures() {
 			return
 		}
 
-		if (!teamOneId && !teamTwoId && !stadiumId) {
+		if (!teamOneId && !stadiumId) {
 			return
 		}
 
@@ -148,11 +138,11 @@ export default function ManageFixtures() {
 				fixture =>
 					fixture.timeSlot?.date === fixtureDate.toISOString() &&
 					fixture.id !== selectedFixtureId &&
-					(fixture.teamOneId === teamId || fixture.teamTwoId === teamId) &&
+					(fixture.teamOneId === teamId) &&
 					fixture.status !== ScheduleStatus.CANCELLED
 			)
 
-			const isTeamFixtureClashing = teamFixtures.some(fixture => {
+			return teamFixtures.some(fixture => {
 				const startTime = new Date(fixture.timeSlot?.start ?? '')
 				const endTime = new Date(fixture.timeSlot?.end ?? '')
 
@@ -165,8 +155,6 @@ export default function ManageFixtures() {
 						endTime.getTime() >= fixtureEndTime.getTime())
 				)
 			})
-
-			return isTeamFixtureClashing
 		}
 
 		if (stadiumId) {
@@ -206,14 +194,6 @@ export default function ManageFixtures() {
 			}
 		}
 
-		if (teamTwoId) {
-			const isTeamTwoClashing = isConflict(teamTwoId)
-			if (isTeamTwoClashing) {
-				setError('Team Two has another fixture on the same date and time')
-				return
-			}
-		}
-
 		setEnableSubmit(true)
 	}, [
 		fixtureDate,
@@ -223,7 +203,6 @@ export default function ManageFixtures() {
 		selectedFixtureId,
 		stadiumId,
 		teamOneId,
-		teamTwoId,
 	])
 
 	return (
@@ -273,7 +252,7 @@ export default function ManageFixtures() {
 													<TableTd pos="first">
 														<div className="flex flex-col">
 															<div className="font-medium text-gray-900">
-																{fixture.teamOne.name} vs {fixture.teamTwo.name}
+																{fixture.teamOne.name}
 															</div>
 															<div className="font-medium text-gray-500">
 																{fixture.stadium.name}
@@ -405,28 +384,13 @@ export default function ManageFixtures() {
 
 						<Select
 							name="teamOneId"
-							label="Team One"
+							label="Band"
 							value={teamOneId}
 							onChange={e => setTeamOneId(e)}
 							error={fetcher.data?.fieldErrors?.teamOneId}
 							data={teams.map(team => ({
 								label: team.name,
 								value: team.id,
-							}))}
-							required
-						/>
-
-						<Select
-							name="teamTwoId"
-							label="Team Two"
-							value={teamTwoId}
-							onChange={e => setTeamTwoId(e)}
-							error={fetcher.data?.fieldErrors?.teamTwoId}
-							disabled={!teamOneId}
-							data={teams.map(team => ({
-								label: team.name,
-								value: team.id,
-								disabled: team.id === teamOneId,
 							}))}
 							required
 						/>

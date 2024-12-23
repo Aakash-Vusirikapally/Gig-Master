@@ -1,4 +1,4 @@
-# IPM Ticket Master
+# Gig Ticket Master
 
 ## Commands
 

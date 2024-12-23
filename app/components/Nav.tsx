@@ -56,18 +56,18 @@ export function Nav(props: NavProps) {
 					>
 						<Avatar
 							src={null}
-							alt="IPL Ticket Master"
+							alt="Gig Ticket Master"
 							size="md"
 							classNames={{
 								placeholder: 'text-xl text-stone-700',
 								root: 'h-8 flex items-center justify-center',
 							}}
 						>
-							A
+							GM
 						</Avatar>
 
 						<span className="font-cal text-xl tracking-wide text-gray-200">
-							IPL TM
+						 Gig Master
 						</span>
 					</Link>
 

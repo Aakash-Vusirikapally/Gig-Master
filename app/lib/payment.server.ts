@@ -12,7 +12,6 @@ export function getAudiencePayments(audienceId: Audience['id']) {
 					schedule: {
 						include: {
 							teamOne: true,
-							teamTwo: true,
 							stadium: true,
 							timeSlot: true,
 						},

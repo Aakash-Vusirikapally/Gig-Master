@@ -9,7 +9,6 @@ export function getAllTeams() {
 		},
 		include: {
 			teamOneSchedules: true,
-			teamTwoSchedules: true,
 		},
 	})
 }

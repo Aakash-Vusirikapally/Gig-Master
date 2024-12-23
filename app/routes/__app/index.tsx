@@ -45,17 +45,21 @@ const actions = [
 
 export const loader = async ({request}: LoaderArgs) => {
 	const upcomingFixtures = await getAllUpcomingFixtures()
+	const sortedFixtures = upcomingFixtures.sort((a, b) =>
+        new Date(a.timeSlot.date).getTime() - new Date(b.timeSlot.date).getTime()
+    );
 	return json({upcomingFixtures})
 }
 
 export default function CustomerOverview() {
 	const {upcomingFixtures} = useLoaderData<typeof loader>()
+	
 
 	return (
 		<>
 			<div className="flex max-w-screen-xl flex-col gap-12 p-10">
 				<div className="flex flex-col gap-8">
-					<PageHeading title="Overview" />
+					<PageHeading title="Events" />
 
 					{upcomingFixtures.length > 0 ? (
 						<div className="grid grid-cols-3 gap-8">
@@ -65,7 +69,7 @@ export default function CustomerOverview() {
 						</div>
 					) : (
 						<EmptyState
-							label="No upcoming matches, check back later"
+							label="No upcoming events, come back later"
 							icon={<CalendarRangeIcon size={70} className="text-gray-600" />}
 						/>
 					)}
@@ -148,8 +152,7 @@ export function Card({
 				<dl className="flex flex-wrap">
 					<div className="flex-auto pl-6 pt-6">
 						<dt className="text-base font-semibold leading-6 text-gray-900">
-							{fixture.teamOne.abbr.toUpperCase()} vs{' '}
-							{fixture.teamTwo.abbr.toUpperCase()}
+							{fixture.teamOne.abbr.toUpperCase()}
 						</dt>
 					</div>
 
@@ -232,119 +235,142 @@ export function Card({
 								fixtureEndTime: f.timeSlot?.end,
 								stadium: f.stadium?.name,
 								teamOne: f.teamOne?.name,
-								teamTwo: f.teamTwo?.name,
-								label: `${f.teamOne?.name} vs ${f.teamTwo?.name}`,
+								label: `${f.teamOne?.name}`,
 								value: f.id,
 							}))}
 							error={fetcher.data?.fieldErrors?.fixtureId}
 							readOnly
 							required
 						/>
+					{/* <Input.Wrapper label="Cardholder Name" required>
+					<Input
+						name="cardHolderName"
+						placeholder="Full Name"
+						required
+					/>
+				</Input.Wrapper> */}
+				<NumberInput
+					name="noOfTickets"
+					label="No of tickets"
+					value={noOfTickets}
+					onChange={e => setNoOfTickets(e)}
+					error={fetcher.data?.fieldErrors?.noOfTickets}
+					min={1}
+					required
+				/>
 
-						<NumberInput
-							name="noOfTickets"
-							label="No of tickets"
-							value={noOfTickets}
-							onChange={e => setNoOfTickets(e)}
-							error={fetcher.data?.fieldErrors?.noOfTickets}
-							min={1}
-							required
+				<Select
+					name="zoneId"
+					label="Zone"
+					error={
+						selectedFixture?.stadium.zones.length === 0
+							? 'No zones'
+							: fetcher.data?.fieldErrors?.zoneId
+					}
+					placeholder="Select a zone"
+					defaultValue={selectedFixture?.stadium.zones?.[0].id ?? undefined}
+					value={selectedZoneId}
+					onChange={e => setSelectedZoneId(e)}
+					data={
+						selectedFixture?.stadium.zones.map(z => ({
+							label: z.name,
+							value: z.id,
+						})) ?? []
+					}
+					required
+				/>
+
+
+		{/* Include the dynamically calculated price */}
+		<Input
+			name="totalPrice"
+			label="Total Price"
+			value={totalPrice > 0 ? formatCurrency(totalPrice) : ''}
+			readOnly
+		/>
+
+		{/* Hidden field to send the actual numeric price value */}
+		<input type="hidden" name="price" value={totalPrice} />
+
+				<Select
+					label="Payment method"
+					clearable={false}
+					required
+					data={Object.values(PaymentMethod).map(method => ({
+						label: titleCase(method.replace(/_/g, ' ')),
+						value: method,
+					}))}
+				/>
+
+				<Input.Wrapper id={id} label="Credit card number" required>
+					<Input
+						id={id}
+						component={ReactInputMask}
+						mask="9999 9999 9999 9999"
+						placeholder="XXXX XXXX XXXX XXXX"
+						alwaysShowMask={false}
+					/>
+				</Input.Wrapper>
+				<Input.Wrapper label="Cardholder Name" required>
+					<Input
+						name="cardHolderName"
+						placeholder="Full Name"
+						required
+					/>
+				</Input.Wrapper>
+
+				<div className="flex items-center gap-4">
+					<Input.Wrapper id={id + 'cvv'} label="CVV" required>
+						<Input
+							id={id + 'cvv'}
+							name="cvv"
+							component={ReactInputMask}
+							mask="999"
+							placeholder="XXX"
+							alwaysShowMask={false}
 						/>
+					</Input.Wrapper>
 
-						<Select
-							name="zoneId"
-							label="Zone"
-							error={
-								selectedFixture?.stadium.zones.length === 0
-									? 'No zones'
-									: fetcher.data?.fieldErrors?.zoneId
-							}
-							placeholder="Select a zone"
-							defaultValue={selectedFixture?.stadium.zones?.[0].id ?? undefined}
-							value={selectedZoneId}
-							onChange={e => setSelectedZoneId(e)}
-							data={
-								selectedFixture?.stadium.zones.map(z => ({
-									label: z.name,
-									value: z.id,
-								})) ?? []
-							}
+							<Input.Wrapper id="expiryDate" label="Expiry (Month/year)" required>
+						<Input
+							id="expiryDate"
+							name="expiryDate"
+							type="month"
+							placeholder="MM/YYYY"
 							required
+							onChange={(e) => {
+								const today = new Date();
+								const [year, month] = e.target.value.split('-').map(Number);
+								if (
+									year < today.getFullYear() ||
+									(year === today.getFullYear() && month < today.getMonth() + 1)
+								) {
+									alert("Expiry date must be in the future.");
+									e.target.value = ""; // Reset invalid value
+								}
+							}}
 						/>
-
-						{/* <p className="text-sm">
-							Available Seats:{' '}
-							{selectedFixture?.stadium.size! - selectedFixtureTicketSales}
-						</p> */}
-
-						<p className="text-sm">
-							{totalPrice ? `Total price: ${formatCurrency(totalPrice)}` : null}
-						</p>
-
-						<Select
-							label="Payment method"
-							clearable={false}
-							required
-							data={Object.values(PaymentMethod).map(method => ({
-								label: titleCase(method.replace(/_/g, ' ')),
-								value: method,
-							}))}
-						/>
-
-						<Input.Wrapper id={id} label="Credit card number" required>
-							<Input
-								id={id}
-								component={ReactInputMask}
-								mask="9999 9999 9999 9999"
-								placeholder="XXXX XXXX XXXX XXXX"
-								alwaysShowMask={false}
-							/>
-						</Input.Wrapper>
-
-						<div className="flex items-center gap-4">
-							<Input.Wrapper id={id + 'cvv'} label="CVV" required>
-								<Input
-									id={id + 'cvv'}
-									name="cvv"
-									component={ReactInputMask}
-									mask="999"
-									placeholder="XXX"
-									alwaysShowMask={false}
-								/>
-							</Input.Wrapper>
-
-							<DatePicker
-								name="expiryDate"
-								label="Expiry"
-								inputFormat="MM/YYYY"
-								clearable={false}
-								placeholder="MM/YYYY"
-								labelFormat="MM/YYYY"
-								minDate={new Date()}
-								initialLevel="year"
-								hideOutsideDates
-								required
-							/>
+					</Input.Wrapper>
 						</div>
 
-						<div className="mt-1 flex items-center justify-end gap-4">
-							<Button
-								variant="subtle"
-								disabled={isSubmitting}
-								onClick={() => handleModal.close()}
-								color="red"
-							>
-								Cancel
-							</Button>
-							<Button
-								type="submit"
-								loading={isSubmitting}
-								loaderPosition="right"
-							>
-								Buy tickets
-							</Button>
-						</div>
-					</fieldset>
+				<div className="mt-1 flex items-center justify-end gap-4">
+					<Button
+						variant="subtle"
+						disabled={isSubmitting}
+						onClick={() => handleModal.close()}
+						color="red"
+					>
+						Cancel
+					</Button>
+					<Button
+						type="submit"
+						loading={isSubmitting}
+						loaderPosition="right"
+					>
+						Buy tickets
+					</Button>
+				</div>
+			</fieldset>
 				</fetcher.Form>
 			</Modal>
 		</>
@@ -356,7 +382,6 @@ interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
 	fixtureStartTime: string
 	fixtureEndTime: string
 	teamOne: string
-	teamTwo: string
 	stadium: string
 	label: string
 }
@@ -365,7 +390,6 @@ const SelectItem = React.forwardRef<HTMLDivElement, ItemProps>(
 	(props: ItemProps, ref) => {
 		const {
 			teamOne,
-			teamTwo,
 			fixtureDate,
 			fixtureStartTime,
 			fixtureEndTime,
@@ -377,7 +401,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, ItemProps>(
 				<Group noWrap>
 					<div>
 						<Text size="sm">
-							{teamOne} vs {teamTwo}
+							{teamOne}
 						</Text>
 						<Text size="xs" opacity={0.65}>
 							{stadium}

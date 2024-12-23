@@ -23,7 +23,7 @@ export const RegisterUserSchema = z
 		address: z.string().min(1, 'Address is required'),
 		confirmPassword: password,
 	})
-	.refine(data => data.password === data.confirmPassword, {
+	.refine((data: { password: any; confirmPassword: any }) => data.password === data.confirmPassword, {
 		message: 'Passwords do not match',
 		path: ['password', 'confirmPassword'],
 	})
@@ -34,7 +34,7 @@ export const ManageStadiumSchema = z.object({
 	abbr: z
 		.string()
 		.min(1, 'Abbreviation is required')
-		.transform(value =>
+		.transform((value: any) =>
 			slugify(value, {lower: true, trim: true, replacement: ''})
 		),
 })
@@ -45,7 +45,7 @@ export const ManageTeamSchema = z.object({
 	abbr: z
 		.string()
 		.min(1, 'Abbreviation is required')
-		.transform(value =>
+		.transform((value: string) =>
 			slugify(value.toUpperCase(), {trim: true, replacement: ''})
 		),
 })
@@ -53,19 +53,18 @@ export const ManageTeamSchema = z.object({
 export const ManageFixtureSchema = z.object({
 	fixtureId: z.string().optional(),
 	teamOneId: z.string().min(1, 'Team one is required'),
-	teamTwoId: z.string().min(1, 'Team two is required'),
 	stadiumId: z.string().min(1, 'Stadium is required'),
-	fixtureDate: z.preprocess(arg => {
+	fixtureDate: z.preprocess((arg: string | number | Date) => {
 		if (typeof arg == 'string' || arg instanceof Date) {
 			return new Date(arg)
 		}
 	}, z.date()),
-	fixtureStartTime: z.preprocess(arg => {
+	fixtureStartTime: z.preprocess((arg: string | number | Date) => {
 		if (typeof arg == 'string' || arg instanceof Date) {
 			return new Date(arg)
 		}
 	}, z.date()),
-	fixtureEndTime: z.preprocess(arg => {
+	fixtureEndTime: z.preprocess((arg: string | number | Date) => {
 		if (typeof arg == 'string' || arg instanceof Date) {
 			return new Date(arg)
 		}

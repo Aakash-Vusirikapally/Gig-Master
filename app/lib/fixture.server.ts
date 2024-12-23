@@ -23,7 +23,6 @@ export function getAllFixtures() {
 				},
 			},
 			teamOne: true,
-			teamTwo: true,
 			timeSlot: true,
 			orders: {
 				include: {
@@ -60,7 +59,6 @@ export function getAllUpcomingFixtures() {
 				},
 			},
 			teamOne: true,
-			teamTwo: true,
 			timeSlot: true,
 			orders: {
 				include: {
@@ -115,7 +113,6 @@ export function createOrUpdateFixture(
 		},
 		update: {
 			teamOneId: data.teamOneId,
-			teamTwoId: data.teamTwoId,
 			stadiumId: data.stadiumId,
 			timeSlot: {
 				update: {
@@ -127,7 +124,6 @@ export function createOrUpdateFixture(
 		},
 		create: {
 			teamOneId: data.teamOneId,
-			teamTwoId: data.teamTwoId,
 			stadiumId: data.stadiumId,
 			timeSlot: {
 				create: {
